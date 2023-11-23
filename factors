@@ -1,0 +1,38 @@
+import math
+import sys
+
+def factorize(n):
+    factors = []
+    for i in range(2, int(math.sqrt(n))+1):        if n % i == 0:
+            factors.append(i)
+            n = n / i
+            if n % i == 0:
+                factors.append(i)
+            else:
+                break
+    if n > 1:
+        factors.append(n)
+    return factors
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python factors.py <file>")
+        exit(1)
+
+    with open(sys.argv[1], "r") as f:
+        data = f.readlines()
+
+    for line in data:
+        n = int(line.strip())
+        if n < 2:
+            print(f"Error: {n} is not a natural number")
+        else:
+            factors = factorize(n)
+            if len(factors) == 1 and factors[0] == n:
+                print(f"{n}={n}")
+            else:
+                print(f"{n}=*".join(str(factor) for factor in factors))
+
+if __name__ == "__main__":
+    main()
+
