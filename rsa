@@ -1,0 +1,57 @@
+#include <stdio.h>
+#includemath.h>
+
+int factorize(int n) {
+  int factors[32] = {1};
+  for (int p = 2; p <= sqrt(n); p++) {
+    for (int q = p; q <= sqrt(n); q++) {
+      if ((n % p) == 0 && (n % q) == 0) {
+        factors[(p * q) / gcd(p, q)] = p * q;
+        n /= p * q;
+      }
+    }
+  }
+  return n != 1 ? n : -1;
+}
+
+int gcd(int a, int b) {
+  int leftover, dividend, divisor;
+  dividend = a > b ? a : b;
+  divisor = a > b ? b : a;
+  while (dividend != divisor) {
+    leftover = dividend;
+    dividend = divisor;
+    divisor = leftover % divisor;
+  }
+  return divisor;
+}
+
+void main() {
+  FILE *fp;
+  char *line;
+  int count = 0;
+  char *lineptr;
+  char *input_file = "input.txt";
+
+  fp = fopen(input_file, "r");
+
+  while (fgets(line, 1024, fp)) {
+    count++;
+    if (count > 2) {
+      lineptr = strchr(line, '\n');
+      while (*(lineptr + 1) != '\0') {
+        lineptr = strchr(&*(lineptr + 2), '\n');
+      }
+      printf("Error: Invalid numeric input. Please enter natural numbers.\n");
+      break;
+    }
+    int num = atoi(line);
+    if (num > 1) {
+      int factors = factorize(num);
+      if (factors != -1) {
+        printf("%d = ", num);
+        for (int p = 2; p <= sqrt(factors); p++) {
+          if (factors % p == 0) {
+            printf("%d", p);
+            factors /= p```  
+
