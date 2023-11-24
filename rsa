@@ -1,0 +1,80 @@
+#!/usr/bin/python3
+
+import sys
+import random
+import time
+
+def is_prime(num, k=20):
+    """
+    Function to perform Miller-Rabin primality test.
+    num: the number to test for primality
+    k: the number of iterations in the test
+    """
+    if num in (2, 3):
+        return True
+    if num < 2 or num % 2 == 0:
+        return False
+
+    # Write num as 2**r * d
+    d, r = num - 1, 0
+    while d % 2 == 0:
+        d //= 2
+        r += 1
+
+    # Witness loop
+    for _ in range(k):
+        a = random.randint(2, num - 2)
+        x = pow(a, d, num)
+        if x == 1 or x == num - 1:
+            continue
+        for _ in range(r - 1):
+            x = pow(x, 2, num)
+            if x == num - 1:
+                break
+        else:
+            return False
+    return True
+
+
+def read_file(file_path):
+    """
+    Read input from a file and return the first line as an integer
+    """
+    try:
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+        return int(lines[0].strip())
+    except FileNotFoundError:
+        print("File not found")
+        sys.exit()
+    except ValueError:
+        print("Invalid input in file")
+        sys.exit()
+
+
+def main():
+    """
+    The main function to execute the script.
+    Takes a filename as a command line argument, 
+    computes the two factors of the number in the file that are prime
+    and prints the result.
+    """
+
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        sys.exit()
+
+    num = read_file(sys.argv[1])
+    start_time = time.time()
+
+    for i in range(2, num//2):
+        if num % i == 0 and is_prime(i) and is_prime(num//i):
+            print(f"{num}={i}*{num//i}")
+            break
+        if time.time() - start_time > 5:
+            print("Time limit exceeded")
+            sys.exit()
+
+if __name__ == "__main__":
+    main()
+
