@@ -1,61 +1,40 @@
-import sys
-import time
+#!/usr/bin/python3
 
-def factorize(num):
-    '''Takes a number as input.
-    Args:
-        num: input integer.
-        Return: None if the number is prime or if the number is negative.
-                A tuple of two factors if the number is not a prime.
-    '''
-    if num < 0:
-        return None
-    elif num < 2:
-        return None
-    elif num == 2:
-        return None
-    else:
-        for i in range(2, int(num**0.5)+1):
-            if num % i == 0:
-                return (i, num//i)
-        return None
+import math
+import sys
+
+def factorize(n):
+    factors = []
+    for i in range(2, int(math.sqrt(n))+1):        if n % i == 0:
+            factors.append(i)
+            n = n / i
+            if n % i == 0:
+                factors.append(i)
+            else:
+                break
+    if n > 1:
+        factors.append(n)
+    return factors
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python factors.py <file>")
+        exit(1)
+
+    with open(sys.argv[1], "r") as f:
+        data = f.readlines()
+
+    for line in data:
+        n = int(line.strip())
+        if n < 2:
+            print(f"Error: {n} is not a natural number")
+        else:
+            factors = factorize(n)
+            if len(factors) == 1 and factors[0] == n:
+                print(f"{n}={n}")
+            else:
+                print(f"{n}=*".join(str(factor) for factor in factors))
 
 if __name__ == "__main__":
-
-    '''Reads the input file.
-    '''
-    if len(sys.argv) != 2:
-        print("Usage: factors <file>")
-        exit()
-
-    input_file = sys.argv[1]
-
-    try:
-        with open(input_file, 'r') as f:
-            lines = f.readlines()
-    except FileNotFoundError:
-        print("File not found")
-        exit()
-
-    start_time = time.time()
-
-    '''loops over each line (which should contain one natural number per line),
-           calls factorize on each number.
-           If factorize returns a tuple of factors,
-           it prints the factorization in the desired forma
-    '''
-    for line in lines:
-        num = int(line.strip())
-        factors = factorize(num)
-        if factors:
-            print("{}!".format(num))
-            print("= x".format(num))
-            print("+".join("{}!"
-                           for i in range(n, num+1, 1 if x>i else 1-x)))
-        '''If the elapsed time exceeds 5 seconds,
-            the program exits with an error message.
-        '''
-        if time.time() - start_time > 5:
-            print("Time limit exceeded")
-            exit()
+    main()
 
